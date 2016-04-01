@@ -19,14 +19,25 @@ function lovernet:log(...)
   print(unpack(args))
 end
 
-function lovernet.new(init)
+function lovernet:encode(input)
+  return self._serdes.dumps(input)
+end
 
-  -- TODO: allow for msgpack / xml / etc instead of json
+function lovernet:decode(input)
+  return self._serdes.loads(input)
+end
+
+function lovernet.new(init)
 
   init = init or {}
   local self = {}
   self._ip = init.ip or "localhost"
   self._port = init.port or 19870
+
+  if self._type == lovernet.status.client then
+    self.getIp = lovernet.getIp
+    self.getPort = lovernet.getPort
+  end
 
   self.log = lovernet.log
 
@@ -49,8 +60,8 @@ function lovernet.new(init)
   self._enet = init.enet or require "enet"
   assert(self._enet)
 
-  self._json = init.json or require "json"
-  assert(self._json)
+  self._serdes = init.serdes or require "bitser"
+  assert(self._serdes)
 
   self.hasOp = lovernet.hasOp
   self.addOp = lovernet.addOp
@@ -63,6 +74,9 @@ function lovernet.new(init)
   self.update = lovernet.update
   self.disconnect = lovernet.disconnect
   self.getData = lovernet.getData
+
+  self.encode = lovernet.encode
+  self.decode = lovernet.decode
 
   self._connectedToServer = false
   self.isConnectedToServer = lovernet.isConnectedToServer
@@ -93,9 +107,17 @@ function lovernet.new(init)
   return self
 end
 
+function lovernet:getIp()
+  return self._ip
+end
+
+function lovernet:getPort()
+  return self._port
+end
+
 function lovernet:_renderPayload()
   --TODO: Add time info to allow for delays (e.g. only refresh this every second)
-  local raw = self._json.encode(self._data)
+  local raw = self:encode(self._data)
   self._data = {}
   return raw
 end
@@ -183,7 +205,7 @@ end
 
 function lovernet:_validateEventReceive(event)
 
-  local success,data = pcall(function() return self._json.decode(event.data) end)
+  local success,data = pcall(function() return self:decode(event.data) end)
   if success then
     local ret = {}
     if type(data) == "table" then
@@ -231,7 +253,7 @@ function lovernet:_validateEventReceive(event)
     end
 
     if #ret > 0 then
-      event.peer:send(self._json.encode(ret))
+      event.peer:send(self:encode(ret))
     end
 
   end -- if success
