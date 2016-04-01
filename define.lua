@@ -70,11 +70,11 @@ return function(l)
     if type(arg.y) ~= "number" then return false,"arg.y expecting number" end
     if math.floor(arg.x) ~= arg.x then return false,"arg.x expecting int" end
     if math.floor(arg.y) ~= arg.y then return false,"arg.y expecting int" end
-    if arg.x < 1 or arg.x > 16 then
-      return false,"arg.x expecting 1-16"
+    if arg.x < 1 or arg.x > 32 then
+      return false,"arg.x expecting 1-32"
     end
-    if arg.y < 1 or arg.y > 16 then
-      return false,"arg.y expecting 1-16"
+    if arg.y < 1 or arg.y > 32 then
+      return false,"arg.y expecting 1-32"
     end
     return true
   end)

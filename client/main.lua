@@ -63,7 +63,7 @@ function love.update(dt)
 end
 
 function love.mousepressed(x,y)
-  lovernet:dataAdd('toggle',{x=math.floor(x/32),y=math.floor(y/32)})
+  lovernet:dataAdd('toggle',{x=math.floor(x/16),y=math.floor(y/16)})
 end
 
 function love.draw()
@@ -76,7 +76,20 @@ function love.draw()
 
   else
 
-    love.graphics.setColor(127,127,127) -- gray
+    love.graphics.setColor(255,255,255) -- white
+
+    local board = lovernet:getData('board')
+    for x = 1,32 do
+      for y = 1,32 do
+        local mode = "line"
+        if board[x] and board[x][y] then
+          mode = "fill"
+        end
+        love.graphics.rectangle(mode,x*16,y*16,16,16)
+      end
+    end
+
+    love.graphics.setColor(127,0,0) -- dark red
     -- iterate over the literal data for players
     for i,v in pairs(lovernet:getData('p')) do
       love.graphics.print(v.name,
@@ -85,7 +98,7 @@ function love.draw()
       love.graphics.circle("line",v.x,v.y,8)
     end
 
-    love.graphics.setColor(255,255,255) -- white
+    love.graphics.setColor(255,0,0) -- red
     -- iterate over the tweened data for players
     for i,v in pairs(users) do
       love.graphics.print(i,
@@ -94,17 +107,6 @@ function love.draw()
       love.graphics.circle("line",v.x,v.y,8)
     end
 
-  end
-
-  local board = lovernet:getData('board')
-  for x = 1,16 do
-    for y = 1,16 do
-      local mode = "line"
-      if board[x] and board[x][y] then
-        mode = "fill"
-      end
-      love.graphics.rectangle(mode,x*32,y*32,32,32)
-    end
   end
 
 end
