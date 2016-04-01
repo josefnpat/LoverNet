@@ -239,7 +239,6 @@ function lovernet:_validateEventReceive(event)
                 print("Op did not validate, ErrMsg:",errmsg)
               end
 
-
             else
               print("Op.f not in ops table:",op.f)
             end

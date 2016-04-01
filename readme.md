@@ -19,10 +19,13 @@ To use a different SerDes, monkey patch `lovernet.encode`, `lovernet.decode` and
 
 For example to use `json` instead of `bitser`:
 
+_Note: it will behove you to use a serializer that supports sparse arrays_
+
 ```lua
 require "lovernet"
 local lovernet = lovernetlib.new()
 
+-- an example using json4lua
 lovernet._serdes = require "json"
 
 lovernet.encode = function(self,input)
@@ -30,6 +33,7 @@ lovernet.encode = function(self,input)
 end
 
 lovernet.decode = function(self,input)
-  return self._serdes.decode(input)
+  local success,errmsg self._serdes.decode(input)
+  return success,errmsg
 end
 ```

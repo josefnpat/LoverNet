@@ -54,4 +54,34 @@ return function(l)
     return {}
   end)
 
+  -- Add a way to draw stuff haha
+  l:addOp('board')
+  l:addProcessOnServer('board',function(self,peer,arg,storage)
+    return storage.board or {}
+  end)
+  l:addDefaultOnClient('board',function(self,peer,arg,storage)
+    return {}
+  end)
+
+  l:addOp('toggle')
+  l:addValidateOnServer('toggle',function(self,peer,arg,storage)
+    if type(arg) ~= "table" then return false,"root expecting table" end
+    if type(arg.x) ~= "number" then return false,"arg.x expecting number" end
+    if type(arg.y) ~= "number" then return false,"arg.y expecting number" end
+    if math.floor(arg.x) ~= arg.x then return false,"arg.x expecting int" end
+    if math.floor(arg.y) ~= arg.y then return false,"arg.y expecting int" end
+    if arg.x < 1 or arg.x > 16 then
+      return false,"arg.x expecting 1-16"
+    end
+    if arg.y < 1 or arg.y > 16 then
+      return false,"arg.y expecting 1-16"
+    end
+    return true
+  end)
+  l:addProcessOnServer('toggle',function(self,peer,arg,storage)
+    storage.board = storage.board or {}
+    storage.board[arg.x] = storage.board[arg.x] or {}
+    storage.board[arg.x][arg.y] = not storage.board[arg.x][arg.y]
+  end)
+
 end

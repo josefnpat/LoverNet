@@ -37,6 +37,10 @@ function love.update(dt)
   lovernet:dataClear('p')
   lovernet:dataAdd('p')
 
+  -- Request the board
+  lovernet:dataClear('board')
+  lovernet:dataAdd('board')
+
   -- cache the users so we can perform a tween
   for i,v in pairs(lovernet:getData('p')) do
     -- initialize users if not set
@@ -56,6 +60,10 @@ function love.update(dt)
 
   -- update the lovernet object
   lovernet:update(dt)
+end
+
+function love.mousepressed(x,y)
+  lovernet:dataAdd('toggle',{x=math.floor(x/32),y=math.floor(y/32)})
 end
 
 function love.draw()
@@ -86,6 +94,17 @@ function love.draw()
       love.graphics.circle("line",v.x,v.y,8)
     end
 
+  end
+
+  local board = lovernet:getData('board')
+  for x = 1,16 do
+    for y = 1,16 do
+      local mode = "line"
+      if board[x] and board[x][y] then
+        mode = "fill"
+      end
+      love.graphics.rectangle(mode,x*32,y*32,32,32)
+    end
   end
 
 end
