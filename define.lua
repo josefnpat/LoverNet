@@ -66,22 +66,43 @@ return function(l)
   l:addOp('toggle')
   l:addValidateOnServer('toggle',function(self,peer,arg,storage)
     if type(arg) ~= "table" then return false,"root expecting table" end
+
     if type(arg.x) ~= "number" then return false,"arg.x expecting number" end
-    if type(arg.y) ~= "number" then return false,"arg.y expecting number" end
     if math.floor(arg.x) ~= arg.x then return false,"arg.x expecting int" end
-    if math.floor(arg.y) ~= arg.y then return false,"arg.y expecting int" end
     if arg.x < 1 or arg.x > 32 then
       return false,"arg.x expecting 1-32"
     end
+
+    if type(arg.y) ~= "number" then return false,"arg.y expecting number" end
+    if math.floor(arg.y) ~= arg.y then return false,"arg.y expecting int" end
     if arg.y < 1 or arg.y > 32 then
       return false,"arg.y expecting 1-32"
     end
+
+    if type(arg.r) ~= "number" then return false,"arg.r expecting number" end
+    if math.floor(arg.r) ~= arg.r then return false,"arg.r expecting int" end
+    if arg.r < 0 or arg.r > 255 then
+      return false,"arg.r expecting 0-255"
+    end
+
+    if type(arg.g) ~= "number" then return false,"arg.g expecting number" end
+    if math.floor(arg.g) ~= arg.g then return false,"arg.g expecting int" end
+    if arg.g < 0 or arg.g > 255 then
+      return false,"arg.g expecting 0-255"
+    end
+
+    if type(arg.b) ~= "number" then return false,"arg.b expecting number" end
+    if math.floor(arg.b) ~= arg.b then return false,"arg.b expecting int" end
+    if arg.b < 0 or arg.b > 255 then
+      return false,"arg.b expecting 0-255"
+    end
+
     return true
   end)
   l:addProcessOnServer('toggle',function(self,peer,arg,storage)
     storage.board = storage.board or {}
     storage.board[arg.x] = storage.board[arg.x] or {}
-    storage.board[arg.x][arg.y] = not storage.board[arg.x][arg.y]
+    storage.board[arg.x][arg.y] = {r=arg.r,g=arg.g,b=arg.b}
   end)
 
 end

@@ -2,6 +2,24 @@ math.randomseed(os.time())
 
 lovernetlib = require("lovernet")
 
+--TODO: clean colors up
+
+colors = {
+  {15,56,15},
+  {48,98,48},
+  {139,172,15},
+  {155,188,14},
+}
+
+color = colors[1]
+
+function love.keypressed(key)
+  local k = tonumber(key)
+  if colors[k] then
+    color = colors[k]
+  end
+end
+
 function love.load()
 
   name = "Guest"..math.random(1,9999)
@@ -63,7 +81,13 @@ function love.update(dt)
 end
 
 function love.mousepressed(x,y)
-  lovernet:dataAdd('toggle',{x=math.floor(x/16),y=math.floor(y/16)})
+  lovernet:dataAdd('toggle',{
+    x=math.floor(x/16),
+    y=math.floor(y/16),
+    r=color[1],
+    g=color[2],
+    b=color[3],
+  })
 end
 
 function love.draw()
@@ -84,6 +108,9 @@ function love.draw()
         local mode = "line"
         if board[x] and board[x][y] then
           mode = "fill"
+          love.graphics.setColor(board[x][y].r,board[x][y].g,board[x][y].b)
+        else
+          love.graphics.setColor(255,255,255)
         end
         love.graphics.rectangle(mode,x*16,y*16,16,16)
       end
@@ -108,6 +135,9 @@ function love.draw()
     end
 
   end
+  love.graphics.setColor(color)
+  love.graphics.circle("fill",8,8,8)
+  love.graphics.setColor(255,255,255)
 
 end
 
