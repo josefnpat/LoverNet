@@ -5,18 +5,15 @@ lovernetlib = require("lovernet")
 --TODO: clean colors up
 
 colors = {
-  {15,56,15},
-  {48,98,48},
-  {139,172,15},
-  {155,188,14},
+  {255,255,255},
+  {0,0,0},
 }
 
 color = colors[1]
 
 function love.keypressed(key)
-  local k = tonumber(key)
-  if colors[k] then
-    color = colors[k]
+  if key == "space" then
+    color = color == colors[1] and colors[2] or colors[1]
   end
 end
 
