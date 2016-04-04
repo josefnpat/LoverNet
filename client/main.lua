@@ -78,7 +78,7 @@ function love.update(dt)
 end
 
 function love.mousepressed(x,y)
-  lovernet:dataAdd('toggle',{
+  lovernet:dataAdd('draw',{
     x=math.floor(x/16),
     y=math.floor(y/16),
     r=color[1],

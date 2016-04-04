@@ -63,8 +63,8 @@ return function(l)
     return {}
   end)
 
-  l:addOp('toggle')
-  l:addValidateOnServer('toggle',function(self,peer,arg,storage)
+  l:addOp('draw')
+  l:addValidateOnServer('draw',function(self,peer,arg,storage)
     if type(arg) ~= "table" then return false,"root expecting table" end
 
     if type(arg.x) ~= "number" then return false,"arg.x expecting number" end
@@ -99,7 +99,7 @@ return function(l)
 
     return true
   end)
-  l:addProcessOnServer('toggle',function(self,peer,arg,storage)
+  l:addProcessOnServer('draw',function(self,peer,arg,storage)
     storage.board = storage.board or {}
     storage.board[arg.x] = storage.board[arg.x] or {}
     storage.board[arg.x][arg.y] = {r=arg.r,g=arg.g,b=arg.b}
