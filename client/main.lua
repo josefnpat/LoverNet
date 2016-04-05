@@ -2,21 +2,6 @@ math.randomseed(os.time())
 
 lovernetlib = require("lovernet")
 
---TODO: clean colors up
-
-colors = {
-  {255,255,255},
-  {0,0,0},
-}
-
-color = colors[1]
-
-function love.keypressed(key)
-  if key == "space" then
-    color = color == colors[1] and colors[2] or colors[1]
-  end
-end
-
 function love.load()
 
   name = "Guest"..math.random(1,9999)
@@ -56,6 +41,8 @@ function love.update(dt)
   lovernet:dataClear('board')
   lovernet:dataAdd('board')
 
+  -- TODO: Show example of update pattern
+
   -- cache the users so we can perform a tween
   for i,v in pairs(lovernet:getData('p')) do
     -- initialize users if not set
@@ -77,14 +64,31 @@ function love.update(dt)
   lovernet:update(dt)
 end
 
-function love.mousepressed(x,y)
-  lovernet:dataAdd('draw',{
-    x=math.floor(x/16),
-    y=math.floor(y/16),
-    r=color[1],
-    g=color[2],
-    b=color[3],
-  })
+function love.mousepressed(mx,my)
+
+  -- For anyone who is hacking at this, take node that while the client only
+  -- works in black and white, the server accepts RGB - so fee free to go crazy.
+
+  -- We don't handle crazy values
+  -- This is an example of how the server can handle bad data.
+  local x,y = math.floor(mx/16),math.floor(my/16)
+
+  -- Local the board cache
+  local board = lovernet:getData('board')
+
+  if board[x] and board[x][y] then -- it is empty
+    if board[x][y].r == 0 and board[x][y].g == 0 and board[x][y].b == 0 then -- it is black
+      -- draw white
+      lovernet:dataAdd('draw',{x=x,y=y,r=255,g=255,b=255})
+    else -- it's not black
+      -- draw black
+      lovernet:dataAdd('draw',{x=x,y=y,r=0,g=0,b=0})
+    end
+  else
+    -- draw white
+    lovernet:dataAdd('draw',{x=x,y=y,r=255,g=255,b=255})
+  end
+
 end
 
 function love.draw()
@@ -98,7 +102,6 @@ function love.draw()
   else
 
     love.graphics.setColor(255,255,255) -- white
-
     local board = lovernet:getData('board')
     for x = 1,32 do
       for y = 1,32 do
@@ -132,9 +135,6 @@ function love.draw()
     end
 
   end
-  love.graphics.setColor(color)
-  love.graphics.circle("fill",8,8,8)
-  love.graphics.setColor(255,255,255)
 
 end
 
