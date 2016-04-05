@@ -18,6 +18,9 @@ function love.load()
   -- Configure the lovernet instances the same way the server does
   require("define")(lovernet)
 
+  -- Get version information
+  lovernet:dataAdd("version")
+
   -- Send your name once
   lovernet:dataAdd("whoami",{name=name})
 
@@ -105,6 +108,12 @@ function love.draw()
 
     love.graphics.printf(
       "Connecting to "..lovernet._ip..":"..lovernet._port,
+      0,love.graphics.getHeight()/2,love.graphics.getWidth(),"center")
+
+  elseif lovernet:getData('version') ~= true then
+
+    love.graphics.printf(
+      lovernet:getData('version'),
       0,love.graphics.getHeight()/2,love.graphics.getWidth(),"center")
 
   else
