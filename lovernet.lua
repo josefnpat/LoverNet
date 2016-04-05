@@ -7,7 +7,7 @@ TODO:
 
 local lovernet = {}
 
-lovernet.status = {
+lovernet.mode = {
   client = "Client",
   server = "Server",
 }
@@ -34,7 +34,7 @@ function lovernet.new(init)
   self._ip = init.ip or "localhost"
   self._port = init.port or 19870
 
-  if self._type == lovernet.status.client then
+  if self._type == lovernet.mode.client then
     self.getIp = lovernet.getIp
     self.getPort = lovernet.getPort
   end
@@ -43,7 +43,7 @@ function lovernet.new(init)
 
   self._dt = 0
 
-  self._type = init.type or lovernet.status.client
+  self._type = init.type or lovernet.mode.client
   self._ops = {}
 
   self._data = {}
@@ -98,11 +98,11 @@ function lovernet.new(init)
   self._validateRecursive = lovernet._validateRecursive
 
   self:log("init","Setting up "..self._type.." on port "..self._port)
-  if self._type == lovernet.status.client then
+  if self._type == lovernet.mode.client then
     self._host = self._enet.host_create()
     self._host:connect(self._ip .. ':' .. self._port)
     self._cache = {}
-  else --if self._type == lovernet.status.server then
+  else --if self._type == lovernet.mode.server then
     self._host = self._enet.host_create("*:"..self._port)
   end
 
@@ -240,13 +240,13 @@ function lovernet:_validateEventReceive(event)
             if self._ops[op.f] then
 
               local vsuccess,errmsg
-              if self._type == lovernet.status.client then
+              if self._type == lovernet.mode.client then
                 if type(self._ops[op.f].validate_client) == "function" then
                   vsuccess,errmsg = self._ops[op.f].validate_client(self,event.peer,op.d,self._storage)
                 else
                   vsuccess,errmsg = self._validateRecursive(self,self._ops[op.f].validate_client,op.d)
                 end
-              else --if self._type == lovernet.status.server then
+              else --if self._type == lovernet.mode.server then
                 if type(self._ops[op.f].validate_server) == "function" then
                   vsuccess,errmsg = self._ops[op.f].validate_server(self,event.peer,op.d,self._storage)
                 else
@@ -256,12 +256,12 @@ function lovernet:_validateEventReceive(event)
 
               if vsuccess then
 
-                if self._type == lovernet.status.client then
+                if self._type == lovernet.mode.client then
                   local opret = self._ops[op.f].process_client(self,event.peer,op.d,self._storage)
                   if opret then
                     self._cache[op.f] = opret
                   end
-                else --if self._type == lovernet.status.server then
+                else --if self._type == lovernet.mode.server then
                   local opret = self._ops[op.f].process_server(self,event.peer,op.d,self._storage)
                   if opret then
                     table.insert(ret,{f=op.f,d=opret})
@@ -301,7 +301,7 @@ function lovernet:update(dt)
 
   if self._host then
 
-    if self._type == lovernet.status.server or self._dt > self:getClientTransmitRate() then
+    if self._type == lovernet.mode.server or self._dt > self:getClientTransmitRate() then
       for _,peer in pairs(self._peers) do
         if self:_hasPayload() then
           self._dt = 0
@@ -316,7 +316,7 @@ function lovernet:update(dt)
 
     if event then
 
-      if self._type == lovernet.status.client then
+      if self._type == lovernet.mode.client then
 
         if event then
           if event.type == "connect" then
@@ -331,7 +331,7 @@ function lovernet:update(dt)
           end
         end
 
-      else --if self._type == lovernet.status.server then
+      else --if self._type == lovernet.mode.server then
 
         if event.type == "connect" then
           self:_initUser(event.peer)
@@ -378,9 +378,9 @@ end
 
 function lovernet:getData(name)
   assert(self._ops[name])
-  if self._type == lovernet.status.client then
+  if self._type == lovernet.mode.client then
     return self._cache[name] or self._ops[name].default_client(self)
-  else --if self._type == lovernet.status.server then
+  else --if self._type == lovernet.mode.server then
     return self._cache[name] or self._ops[name].default_server(self)
   end
 end
