@@ -55,17 +55,20 @@ function love.update(dt)
   for i,v in pairs(lovernet:getData('p')) do
     -- initialize users if not set
     if users[v.name] == nil then
-      users[v.name] = {x=v.x,y=v.y}
+      users[v.name] = {x=v.x,y=v.y,t=os.time()}
     end
     -- update target position
     users[v.name].tx = v.x
     users[v.name].ty = v.y
   end
 
-  -- Simple tween
+  -- Simple tween & cleanup
   for i,v in pairs(users) do
     v.x = (v.tx + v.x)/2
     v.y = (v.ty + v.y)/2
+    if v.t < os.time()-2 then
+      users[i] = nil
+    end
   end
 
   -- update the lovernet object
