@@ -201,8 +201,7 @@ end
 
 function lovernet:_initUser(peer)
   local user = {}
-  local names = {"Benn","Seppi","Phil","Sam","Jerry","Ann","Joe","Fran","Jen"}
-  user.name = names[math.random(#names)]
+  user.name = "InvalidName"..math.random(1,9999)
   self._users[self:_getUserIndex(peer)] = user
 end
 

@@ -1,4 +1,11 @@
+
 return function(l)
+
+  local isValidString = function(input)
+    local utf8 = require("utf8")
+    local success = utf8.len(input)
+    return success
+  end
 
   -- Add a way to name users
   l:addOp('whoami')
@@ -7,7 +14,9 @@ return function(l)
   -- Store the user's name in the user data
   l:addProcessOnServer('whoami',function(self,peer,arg,storage)
     local user = self:_getUser(peer)
-    user.name = arg.name
+    if isValidString(arg.name) then
+      user.name = arg.name
+    end
   end)
 
   -- Add a way to send the current user's position
