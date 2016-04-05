@@ -31,19 +31,20 @@ function lovernet.new(init)
 
   init = init or {}
   local self = {}
-  self._ip = init.ip or "localhost"
-  self._port = init.port or 19870
-
-  if self._type == lovernet.mode.client then
-    self.getIp = lovernet.getIp
-    self.getPort = lovernet.getPort
-  end
 
   self.log = lovernet.log
 
   self._dt = 0
 
   self._type = init.type or lovernet.mode.client
+
+  self._ip = init.ip or "localhost"
+  self._port = init.port or 19870
+  if self._type == lovernet.mode.client then
+    self.getIp = lovernet.getIp
+    self.getPort = lovernet.getPort
+  end
+
   self._ops = {}
 
   self._data = {}
