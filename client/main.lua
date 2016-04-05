@@ -113,8 +113,8 @@ function love.draw()
 
     love.graphics.setColor(255,255,255) -- white
 
-    for x = 1,32 do
-      for y = 1,32 do
+    for x = 1,board_size do
+      for y = 1,board_size do
         local mode = "line"
         if board[x] and board[x][y] then
           mode = "fill"

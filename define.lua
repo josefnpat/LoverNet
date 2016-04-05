@@ -67,8 +67,8 @@ return function(l)
   local check_dim = function(data)
     if type(data) ~= "number" then return false,"data expecting number" end
     if math.floor(data) ~= data then return false,"data expecting int" end
-    if data < 1 or data > 32 then
-      return false,"data expecting 1-32"
+    if data < 1 or data > board_size then
+      return false,"data expecting 1-"..board_size
     end
     return true
   end
