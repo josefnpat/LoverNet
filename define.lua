@@ -90,12 +90,23 @@ return function(l)
   l:addProcessOnServer('draw',function(self,peer,arg,storage)
     storage.board = storage.board or {}
     storage.board[arg.x] = storage.board[arg.x] or {}
-    storage.board[arg.x][arg.y] = {
-      r=arg.r,
-      g=arg.g,
-      b=arg.b,
-      u=storage.draw_index or 0,
-    }
+    if storage.board[arg.x][arg.y] then
+      if storage.board[arg.x][arg.y].r == arg.r and
+        storage.board[arg.x][arg.y].g == arg.g and
+        storage.board[arg.x][arg.y].b == arg.b then
+        -- nop
+      else
+        storage.board[arg.x][arg.y] = {
+          r=arg.r,g=arg.g,b=arg.b,
+          u=storage.draw_index or 0,
+        }
+      end
+    else
+      storage.board[arg.x][arg.y] = {
+        r=arg.r,g=arg.g,b=arg.b,
+        u=storage.draw_index or 0,
+      }
+    end
     storage.draw_index = ( storage.draw_index or 0 ) + 1
   end)
 
