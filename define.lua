@@ -3,12 +3,7 @@ return function(l)
   -- Add a way to name users
   l:addOp('whoami')
   -- Validate the name argument
-  l:addValidateOnServer('whoami',function(self,peer,arg,storage)
-    if type(arg.name) == "string" and arg.name ~= "" then
-      return true
-    end
-    return false
-  end)
+  l:addValidateOnServer('whoami',{name="string"})
   -- Store the user's name in the user data
   l:addProcessOnServer('whoami',function(self,peer,arg,storage)
     local user = self:_getUser(peer)
@@ -17,10 +12,8 @@ return function(l)
 
   -- Add a way to send the current user's position
   l:addOp('pos')
-  -- Validate the x and y arguments
-  l:addValidateOnServer('pos',function(self,peer,arg,storage)
-    return type(arg.x) == "number" and type(arg.y) == "number"
-  end)
+  -- Validate the x and y arguments as numbers
+  l:addValidateOnServer('pos',{x="number",y="number"})
   -- Store the position of the user in the user data
   l:addProcessOnServer('pos',function(self,peer,arg,storage)
     local user = self:_getUser(peer)
@@ -64,41 +57,30 @@ return function(l)
   end)
 
   l:addOp('draw')
-  l:addValidateOnServer('draw',function(self,peer,arg,storage)
-    if type(arg) ~= "table" then return false,"root expecting table" end
 
-    if type(arg.x) ~= "number" then return false,"arg.x expecting number" end
-    if math.floor(arg.x) ~= arg.x then return false,"arg.x expecting int" end
-    if arg.x < 1 or arg.x > 32 then
-      return false,"arg.x expecting 1-32"
+  local check_dim = function(data)
+    if type(data) ~= "number" then return false,"data expecting number" end
+    if math.floor(data) ~= data then return false,"data expecting int" end
+    if data < 1 or data > 32 then
+      return false,"data expecting 1-32"
     end
-
-    if type(arg.y) ~= "number" then return false,"arg.y expecting number" end
-    if math.floor(arg.y) ~= arg.y then return false,"arg.y expecting int" end
-    if arg.y < 1 or arg.y > 32 then
-      return false,"arg.y expecting 1-32"
-    end
-
-    if type(arg.r) ~= "number" then return false,"arg.r expecting number" end
-    if math.floor(arg.r) ~= arg.r then return false,"arg.r expecting int" end
-    if arg.r < 0 or arg.r > 255 then
-      return false,"arg.r expecting 0-255"
-    end
-
-    if type(arg.g) ~= "number" then return false,"arg.g expecting number" end
-    if math.floor(arg.g) ~= arg.g then return false,"arg.g expecting int" end
-    if arg.g < 0 or arg.g > 255 then
-      return false,"arg.g expecting 0-255"
-    end
-
-    if type(arg.b) ~= "number" then return false,"arg.b expecting number" end
-    if math.floor(arg.b) ~= arg.b then return false,"arg.b expecting int" end
-    if arg.b < 0 or arg.b > 255 then
-      return false,"arg.b expecting 0-255"
-    end
-
     return true
-  end)
+  end
+
+  local check_color_part = function(data)
+    if type(data) ~= "number" then return false,"data expecting number" end
+    if math.floor(data) ~= data then return false,"data expecting int" end
+    if data < 0 or data > 255 then
+      return false,"data expecting 0-255"
+    end
+    return true
+  end
+
+  l:addValidateOnServer('draw',{
+    x=check_dim,y=check_dim,
+    r=check_color_part,g=check_color_part,b=check_color_part,
+  })
+
   l:addProcessOnServer('draw',function(self,peer,arg,storage)
     storage.board = storage.board or {}
     storage.board[arg.x] = storage.board[arg.x] or {}

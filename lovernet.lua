@@ -95,6 +95,8 @@ function lovernet.new(init)
   self._removeUser = lovernet._removeUser
   self._initUser = lovernet._initUser
 
+  self._validateRecursive = lovernet._validateRecursive
+
   self:log("init","Setting up "..self._type.." on port "..self._port)
   if self._type == lovernet.status.client then
     self._host = self._enet.host_create()
@@ -203,6 +205,29 @@ function lovernet:_initUser(peer)
   self._users[self:_getUserIndex(peer)] = user
 end
 
+function lovernet:_validateRecursive(config,data)
+  if type(config) == "table" then
+    if type(data) == "table" then
+      for i,v in pairs(config) do
+        local success,errmsg = self._validateRecursive(self,v,data[i])
+        if not success then
+          return false,errmsg
+        end
+      end
+    else
+      return false,"expecting `table`, got `"..type(data).."`["..tostring(data).."]"
+    end
+    return true
+  elseif type(config) == "function" then
+    local success,errmsg = config(data)
+    return success,errmsg
+  elseif config == type(data) then
+    return true
+  else
+    return false,"expecting `"..config.."`, got `"..type(data).."`["..tostring(data).."]"
+  end
+end
+
 function lovernet:_validateEventReceive(event)
 
   local success,data = pcall(function() return self:decode(event.data) end)
@@ -216,9 +241,17 @@ function lovernet:_validateEventReceive(event)
 
               local vsuccess,errmsg
               if self._type == lovernet.status.client then
-                vsuccess,errmsg = self._ops[op.f].validate_client(self,event.peer,op.d,self._storage)
+                if type(self._ops[op.f].validate_client) == "function" then
+                  vsuccess,errmsg = self._ops[op.f].validate_client(self,event.peer,op.d,self._storage)
+                else
+                  vsuccess,errmsg = self._validateRecursive(self,self._ops[op.f].validate_client,op.d)
+                end
               else --if self._type == lovernet.status.server then
-                vsuccess,errmsg = self._ops[op.f].validate_server(self,event.peer,op.d,self._storage)
+                if type(self._ops[op.f].validate_server) == "function" then
+                  vsuccess,errmsg = self._ops[op.f].validate_server(self,event.peer,op.d,self._storage)
+                else
+                  vsuccess,errmsg = self._validateRecursive(self,self._ops[op.f].validate_server,op.d)
+                end
               end
 
               if vsuccess then
