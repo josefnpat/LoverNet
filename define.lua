@@ -47,13 +47,19 @@ return function(l)
     return {}
   end)
 
-  -- Add a way to draw stuff haha
-  l:addOp('board')
-  l:addProcessOnServer('board',function(self,peer,arg,storage)
-    return storage.board or {}
-  end)
-  l:addDefaultOnClient('board',function(self,peer,arg,storage)
-    return {}
+  -- Get board updates
+  l:addOp('b')
+  l:addValidateOnServer('b',"number")
+  l:addProcessOnServer('b',function(self,peer,arg,storage)
+    local ret = {}
+    for x,row in pairs(storage.board or {}) do
+      for y,val in pairs(row) do
+        if val.u >= arg then
+          table.insert(ret,{x=x,y=y,u=val.u,r=val.r,g=val.g,b=val.b})
+        end
+      end
+    end
+    return ret
   end)
 
   l:addOp('draw')
@@ -84,7 +90,13 @@ return function(l)
   l:addProcessOnServer('draw',function(self,peer,arg,storage)
     storage.board = storage.board or {}
     storage.board[arg.x] = storage.board[arg.x] or {}
-    storage.board[arg.x][arg.y] = {r=arg.r,g=arg.g,b=arg.b}
+    storage.board[arg.x][arg.y] = {
+      r=arg.r,
+      g=arg.g,
+      b=arg.b,
+      u=storage.draw_index or 0,
+    }
+    storage.draw_index = ( storage.draw_index or 0 ) + 1
   end)
 
 end

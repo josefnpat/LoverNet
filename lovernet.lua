@@ -74,6 +74,7 @@ function lovernet.new(init)
   self.update = lovernet.update
   self.disconnect = lovernet.disconnect
   self.getData = lovernet.getData
+  self.clearData = lovernet.clearData
 
   self.encode = lovernet.encode
   self.decode = lovernet.decode
@@ -269,11 +270,11 @@ function lovernet:_validateEventReceive(event)
                 end
 
               else
-                print("Op did not validate, ErrMsg:",errmsg)
+                print("Op `"..op.f.."` did not validate, ErrMsg:",errmsg)
               end
 
             else
-              print("Op.f not in ops table:",op.f)
+              print("Op.f `"..op.f.."` not in ops table:",op.f)
             end
           else
             print("Op data object expect to have `f` index, got ",type(op.f))
@@ -383,6 +384,11 @@ function lovernet:getData(name)
   else --if self._type == lovernet.mode.server then
     return self._cache[name] or self._ops[name].default_server(self)
   end
+end
+
+function lovernet:clearData(name)
+  assert(self._ops[name])
+  self._cache[name] = nil
 end
 
 -- add a request to the queue

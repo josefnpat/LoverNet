@@ -7,6 +7,7 @@ function love.load()
   name = "Guest"..math.random(1,9999)
   lx,ly = 0,0
   users = {}
+  board = {}
 
   -- Connects to localhost by default
   lovernet = lovernetlib.new()
@@ -37,11 +38,18 @@ function love.update(dt)
   lovernet:dataClear('p')
   lovernet:dataAdd('p')
 
-  -- Request the board
-  lovernet:dataClear('board')
-  lovernet:dataAdd('board')
+  -- Request updates to the board
+  lovernet:dataClear('b')
+  lovernet:dataAdd('b',board_index or 0)
 
-  -- TODO: Show example of update pattern
+  if lovernet:getData('b') then
+    for _,v in pairs(lovernet:getData('b')) do
+      board_index = math.max(board_index or 0,v.u+1)
+      board[v.x] = board[v.x] or {}
+      board[v.x][v.y] = {r=v.r,g=v.g,b=v.b}
+    end
+    lovernet:clearData('b')
+  end
 
   -- cache the users so we can perform a tween
   for i,v in pairs(lovernet:getData('p')) do
@@ -73,9 +81,6 @@ function love.mousepressed(mx,my)
   -- This is an example of how the server can handle bad data.
   local x,y = math.floor(mx/16),math.floor(my/16)
 
-  -- Local the board cache
-  local board = lovernet:getData('board')
-
   if board[x] and board[x][y] then -- it is empty
     if board[x][y].r == 0 and board[x][y].g == 0 and board[x][y].b == 0 then -- it is black
       -- draw white
@@ -101,8 +106,13 @@ function love.draw()
 
   else
 
+    love.graphics.setColor(255,255,255,63)
+
+    love.graphics.printf("board index:"..tostring(board_index),
+      0,0,love.graphics.getWidth(),"center")
+
     love.graphics.setColor(255,255,255) -- white
-    local board = lovernet:getData('board')
+
     for x = 1,32 do
       for y = 1,32 do
         local mode = "line"
