@@ -110,7 +110,7 @@ function love.draw()
           mode = "fill"
           love.graphics.setColor(board[x][y].r,board[x][y].g,board[x][y].b)
         else
-          love.graphics.setColor(255,255,255)
+          love.graphics.setColor(255,255,255,63)
         end
         love.graphics.rectangle(mode,x*16,y*16,16,16)
       end
