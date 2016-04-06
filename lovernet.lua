@@ -1,10 +1,3 @@
---[[
-TODO:
-* add ldoc
-* clean up api
-* follow kikito guidelines on lua modules
---]]
-
 local lovernet = {}
 
 lovernet.mode = {
@@ -183,7 +176,6 @@ function lovernet:addDefaultOnServer(name,input)
   self._ops[name].default_server = input
 end
 
---TODO: easy ip conflict -- use hash and sync with client
 function lovernet:_getUserIndex(peer)
   return tostring(peer)
 end
@@ -295,9 +287,6 @@ end
 
 function lovernet:update(dt)
 
-  --TODO Add ping
-  --TODO test disconnecting for client/server
-
   self._dt = self._dt + dt
 
   if self._host then
@@ -307,7 +296,6 @@ function lovernet:update(dt)
         if self:_hasPayload() then
           self._dt = 0
           local payload = self:_renderPayload()
-          --print("payload",tostring(peer),payload)
           peer:send( payload )
         end
       end
