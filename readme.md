@@ -28,18 +28,18 @@ library you wish to use to your project. I suggest the included `bitser.lua` and
 
 To change the way logging works, monkey patch `log`.
 
-For example, to print the log info instead of using the default formatting:
+For example, to print the log to a file instead of standard out:
 
 ```lua
 lovernetlib = require "lovernet"
 
-lovernet = lovernetlib.new()
-
-lovernet.log = function(...)
+log = function(...)
   local args = {...} -- pull in all args
   local _self = table.remove(args,1) -- remove self object
-  print(unpack(args))
+  love.filesystem.append("log.txt",table.concat(args,"\t").."\n")
 end
+
+lovernet = lovernetlib.new{log=log}
 ```
 
 ### Included Libraries

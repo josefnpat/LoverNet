@@ -25,20 +25,25 @@ lovernet.mode = {
 -- param enet The enet global module. Defaults the the one in namespace.
 -- param serdes The Serializer/Deserializer module. Defaults to bitser.
 -- param transmitRate The transmission rate that the object should update with. Defaults to 1/16.
+-- param log The function used for logging. Defaults to lovernet.log.
 -- return new LoverNet object.
 function lovernet.new(init)
 
   init = init or {}
   local self = {}
 
-  self.log = lovernet.log
+  self.log = init.log or lovernet.log
+  assert(type(self.log)=="function")
 
   self._dt = 0
 
   self._type = init.type or lovernet.mode.client
+  assert(type(self._type)=="string")
 
   self._ip = init.ip or "localhost"
+  assert(type(self._ip)=="string")
   self._port = init.port or 19870
+  assert(type(self._port)=="number" or type(self._port=="string"))
   self.getIp = lovernet.getIp
   self.getPort = lovernet.getPort
 
@@ -84,6 +89,7 @@ function lovernet.new(init)
   self.isConnectedToServer = lovernet.isConnectedToServer
 
   self._transmitRate = init.transmitRate or 1/16
+  assert(type(self._transmitRate)=="number")
   self.getClientTransmitRate = lovernet.getClientTransmitRate
   self.setClientTransmitRate = lovernet.setClientTransmitRate
 
