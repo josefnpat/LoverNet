@@ -89,39 +89,43 @@ function client.mousepressed(mx,my,button)
   -- For anyone who is hacking at this, take note that while the client only
   -- works in black and white, the server accepts RGB - so fee free to go crazy.
 
-  -- We don't handle crazy values
-  -- This is an example of how the server can handle bad data.
   local x,y = math.floor(mx/16),math.floor(my/16)
 
-  if button == 1 then
+  -- As shown in define.lua, the draw operation can handle erronious data, but
+  -- We're going to try to avoid sending bad data anyway.
+  if x > 0 and x <= board_size and y > 0 and y <= board_size then
 
-    if client_data.board[x] and client_data.board[x][y] then -- it is empty
-      if client_data.board[x][y].r == 0 and client_data.board[x][y].g == 0 and client_data.board[x][y].b == 0 then -- it is black
+    if button == 1 then
+
+      if client_data.board[x] and client_data.board[x][y] then -- it is empty
+        if client_data.board[x][y].r == 0 and client_data.board[x][y].g == 0 and client_data.board[x][y].b == 0 then -- it is black
+          -- draw white
+          client_data.lovernet:dataAdd('draw',{x=x,y=y,r=255,g=255,b=255})
+        else -- it's not black
+          -- draw black
+          client_data.lovernet:dataAdd('draw',{x=x,y=y,r=0,g=0,b=0})
+        end
+      else
         -- draw white
         client_data.lovernet:dataAdd('draw',{x=x,y=y,r=255,g=255,b=255})
-      else -- it's not black
-        -- draw black
-        client_data.lovernet:dataAdd('draw',{x=x,y=y,r=0,g=0,b=0})
       end
-    else
-      -- draw white
-      client_data.lovernet:dataAdd('draw',{x=x,y=y,r=255,g=255,b=255})
-    end
 
-  elseif button == 2 then
+    elseif button == 2 then
 
-    -- Simple hack to show how multiple dataAdd's can be run in one update
-    local cat = love.image.newImageData('cat.png')
-    for cx = 1,cat:getWidth() do
-      for cy = 1,cat:getHeight() do
-        local cr,cg,cb,ca = cat:getPixel(cx-1,cy-1)
-        -- Get the target location of the pixel
-        local tx,ty = cx+x-1,cy+y-1
-        -- Only send data if it's alpha is 255 and it's on the board
-        if ca == 255 and tx <= board_size and ty <= board_size and tx > 0 and ty > 0 then
-          client_data.lovernet:dataAdd('draw',{x=tx,y=ty,r=cr,g=cg,b=cb})
+      -- Simple hack to show how multiple dataAdd's can be run in one update
+      local cat = love.image.newImageData('cat.png')
+      for cx = 1,cat:getWidth() do
+        for cy = 1,cat:getHeight() do
+          local cr,cg,cb,ca = cat:getPixel(cx-1,cy-1)
+          -- Get the target location of the pixel
+          local tx,ty = cx+x-1,cy+y-1
+          -- Only send data if it's alpha is 255 and it's on the board
+          if ca == 255 and tx <= board_size and ty <= board_size and tx > 0 and ty > 0 then
+            client_data.lovernet:dataAdd('draw',{x=tx,y=ty,r=cr,g=cg,b=cb})
+          end
         end
       end
+
     end
 
   end
