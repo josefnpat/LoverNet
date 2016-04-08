@@ -97,6 +97,18 @@ function love.keypressed(key)
       end
     elseif key == "return" then
       options[current_option].action()
+    elseif key == "backspace" then
+      if options[current_option].label == "name" then
+        if demo_name then
+          demo_name = string.sub(demo_name,1,-2)
+          if demo_name == "" then demo_name = nil end
+        end
+      elseif options[current_option].label == "ip" then
+        if demo_ip then
+          demo_ip = string.sub(demo_ip,1,-2)
+          if demo_ip == "" then demo_ip = nil end
+        end
+      end
     end
 
   end
