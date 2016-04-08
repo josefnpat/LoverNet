@@ -16,7 +16,7 @@ function love.load()
   options = {
     {
       label = "name",
-      name = function() return "Change name: "..(demo_name or "Lover") end,
+      name = function() return "Change name: "..(demo_name or "[Lover]") end,
       action = function()
         demo_name = nil
       end,
@@ -29,7 +29,7 @@ function love.load()
     },
     {
       label = "ip",
-      name = function() return "Change demo server ip: "..(demo_ip or "localhost") end,
+      name = function() return "Change demo server ip: "..(demo_ip or "[localhost]") end,
       action = function()
         demo_ip = nil
       end,
