@@ -165,7 +165,7 @@ function client.draw()
           mode = "line"
           love.graphics.setColor(255,255,255,63)
         end
-        love.graphics.rectangle(mode,x*pixel_size,y*pixel_size,pixel_size,pixel_size)
+        love.graphics.rectangle(mode,x*pixel_size+0.5,y*pixel_size+0.5,pixel_size,pixel_size)
       end
     end
 
