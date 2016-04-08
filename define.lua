@@ -33,7 +33,7 @@ return function(l)
   l:addValidateOnServer('whoami',{name="string"})
   -- Store the user's name in the user data
   l:addProcessOnServer('whoami',function(self,peer,arg,storage)
-    local user = self:_getUser(peer)
+    local user = self:getUser(peer)
     self:log("event","Rename: "..tostring(user.name).." => "..tostring(arg.name))
     if isValidString(arg.name) then
       user.name = arg.name
@@ -46,7 +46,7 @@ return function(l)
   l:addValidateOnServer('pos',{x="number",y="number"})
   -- Store the position of the user in the user data
   l:addProcessOnServer('pos',function(self,peer,arg,storage)
-    local user = self:_getUser(peer)
+    local user = self:getUser(peer)
     user.x = arg.x
     user.y = arg.y
   end)
@@ -56,7 +56,7 @@ return function(l)
   -- Create a table containing the name, x and y of each user
   l:addProcessOnServer('p',function(self,peer,arg,storage)
     local info = {}
-    for i,v in pairs(self:_getUsers()) do
+    for i,v in pairs(self:getUsers()) do
       if v.x and v.y then
         table.insert(info,{name=v.name,x=v.x,y=v.y})
       end
