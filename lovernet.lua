@@ -290,7 +290,7 @@ function lovernet:setClientTransmitRate(rate)
   self._transmitRate = rate
 end
 
---- Get the current cache value for a named resource.
+--- Get the current cache value for a named resource. Only available in client mode.
 -- @param name string
 -- @return data object
 function lovernet:getCache(name)
@@ -298,14 +298,14 @@ function lovernet:getCache(name)
   return self._cache[name] or self._ops[name].default_client(self)
 end
 
---- Clears the current cache value for a named resource in case you are using streamed data.
+--- Clears the current cache value for a named resource in case you are using streamed data. Only available in client mode.
 -- @param name string
 function lovernet:clearCache(name)
   assert(self._ops[name])
   self._cache[name] = nil
 end
 
---- Queues a new outgoing data request
+--- Queues a new outgoing data request. Only available in client mode.
 -- @param name string
 -- @param args data
 function lovernet:pushData(name,args)
@@ -313,7 +313,7 @@ function lovernet:pushData(name,args)
   table.insert(self._data,{f=name,d=args})
 end
 
---- Checks if there are any outgoing data requests
+--- Checks if there are any outgoing data requests. Only available in client mode.
 -- @param name string
 function lovernet:hasData(name)
   assert(self._ops[name])
@@ -325,7 +325,7 @@ function lovernet:hasData(name)
   return false
 end
 
---- Clears any queued outgoing data requests
+--- Clears any queued outgoing data requests. Only available in client mode.
 -- @param name string
 function lovernet:clearData(name)
   assert(self._ops[name])
