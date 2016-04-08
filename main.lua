@@ -12,8 +12,8 @@ function love.load()
   options = {
     {
       name = function() return server_data and
-        --"Server Hosted"
-        "Stop Server" or "Host Server" end,
+        --"Stop Server"
+        "Server Hosted" or "Host Server" end,
       action = function()
         if server_data then
           --server.stop()
