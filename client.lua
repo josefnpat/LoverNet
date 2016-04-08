@@ -4,7 +4,7 @@ function client.start(args)
 
   client_data = {}
 
-  client_data.name = "Guest"..math.random(1,9999)
+  client_data.name = args.name or "Lover"..math.random(1000,9999)
   client_data.lx,client_data.ly = 0,0
   client_data.users = {}
   client_data.board = {}

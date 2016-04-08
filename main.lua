@@ -1,15 +1,23 @@
-math.randomseed(os.time())
-
-lovernetlib = require("lovernet")
-
-server = require "server"
-client = require "client"
-
 function love.load()
 
   if headless then server.start() return end
 
+  math.randomseed(os.time())
+
+  lovernetlib = require("lovernet")
+
+  server = require "server"
+  client = require "client"
+
+  demo_name = nil
+
   options = {
+    {
+      name = function() return "Change name: "..tostring(demo_name) end,
+      action = function()
+        demo_name = nil
+      end,
+    },
     {
       name = function() return server_data and
         --"Stop Server"
@@ -25,13 +33,13 @@ function love.load()
     {
       name = function() return "Connect to localhost" end,
       action = function()
-        client.start()
+        client.start{name=demo_name}
       end,
     },
     {
       name = function() return "Connect to demo server" end,
       action = function()
-        client.start{ip="50.116.63.25"}
+        client.start{ip="50.116.63.25",name=demo_name}
       end,
     },
     {
@@ -91,6 +99,10 @@ function love.keypressed(key)
     end
   end
 
+end
+
+function love.textinput(letter)
+  demo_name = (demo_name or "" ) .. letter
 end
 
 function love.mousepressed(x,y,button)
