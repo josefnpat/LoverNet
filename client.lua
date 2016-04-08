@@ -89,7 +89,7 @@ function client.mousepressed(mx,my,button)
   -- For anyone who is hacking at this, take note that while the client only
   -- works in black and white, the server accepts RGB - so fee free to go crazy.
 
-  local x,y = math.floor(mx/16),math.floor(my/16)
+  local x,y = math.floor(mx/pixel_size),math.floor(my/pixel_size)
 
   -- As shown in define.lua, the draw operation can handle erronious data, but
   -- We're going to try to avoid sending bad data anyway.
@@ -165,7 +165,7 @@ function client.draw()
           mode = "line"
           love.graphics.setColor(255,255,255,63)
         end
-        love.graphics.rectangle(mode,x*16,y*16,16,16)
+        love.graphics.rectangle(mode,x*pixel_size,y*pixel_size,pixel_size,pixel_size)
       end
     end
 

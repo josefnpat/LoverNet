@@ -1,4 +1,5 @@
 board_size = 64
+pixel_size = 12
 headless = false
 
 function love.conf(t)
@@ -20,8 +21,8 @@ function love.conf(t)
     t.modules.window = false
   else
     t.window.title = "LoverNet Demo"
-    t.window.width = 16*(board_size+2)
-    t.window.height = 16*(board_size+2)
+    t.window.width = pixel_size*(board_size+2)
+    t.window.height = pixel_size*(board_size+2)
   end
 
 end
