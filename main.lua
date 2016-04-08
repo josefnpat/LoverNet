@@ -39,7 +39,9 @@ function love.load()
       action = love.event.quit,
     },
   }
+
   current_option = 1
+
 end
 
 function love.draw()
@@ -103,5 +105,4 @@ end
 function love.quit()
   if client_data then client.stop() end
   if server_data then server.stop() end
-  print('bye!')
 end
