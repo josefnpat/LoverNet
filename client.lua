@@ -141,6 +141,7 @@ function client.draw()
     love.graphics.printf(
       client_data.lovernet:getData('version'),
       0,love.graphics.getHeight()/2,love.graphics.getWidth(),"center")
+
   else
 
     love.graphics.setColor(255,255,255,63)
