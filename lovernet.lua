@@ -1,10 +1,16 @@
---- LoverNet is a enet networking wrapper module for LÖVE.
+--- LoverNet is an enet networking wrapper module for LÖVE.
 -- @module LoverNet
 -- @author Josef N Patoprsty <seppi@josefnpat.com>
 -- @copyright 2016
 -- @license <a href="http://www.opensource.org/licenses/zlib-license.php">zlib/libpng</a>
 
-local lovernet = {}
+local lovernet = {
+  _VERSION     = "v%%VERSION%%",
+  _DESCRIPTION = "An enet networking wrapper module for LÖVE.",
+  _URL         = "https://github.com/josefnpat/lovernet",
+  _LICENSE     = "zlib/libpng",
+  _AUTHOR      = "Josef N Patoprsty <seppi@josefnpat.com>",
+}
 
 lovernet.mode = {
   client = "Client",
