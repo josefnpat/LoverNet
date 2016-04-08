@@ -11,11 +11,27 @@ function love.load()
 
   demo_name = nil
 
+  demo_ip = "50.116.63.25"
+
   options = {
     {
-      name = function() return "Change name: "..tostring(demo_name) end,
+      label = "name",
+      name = function() return "Change name: "..(demo_name or "Lover") end,
       action = function()
         demo_name = nil
+      end,
+    },
+    {
+      name = function() return "Connect to " .. (demo_ip and "remote" or "localhost") .. " server" end,
+      action = function()
+        client.start{ip=demo_ip,name=demo_name}
+      end,
+    },
+    {
+      label = "ip",
+      name = function() return "Change demo server ip: "..(demo_ip or "localhost") end,
+      action = function()
+        demo_ip = nil
       end,
     },
     {
@@ -28,18 +44,6 @@ function love.load()
         else
           server.start()
         end
-      end,
-    },
-    {
-      name = function() return "Connect to localhost" end,
-      action = function()
-        client.start{name=demo_name}
-      end,
-    },
-    {
-      name = function() return "Connect to demo server" end,
-      action = function()
-        client.start{ip="50.116.63.25",name=demo_name}
       end,
     },
     {
@@ -110,7 +114,11 @@ function love.keypressed(key)
 end
 
 function love.textinput(letter)
-  demo_name = (demo_name or "" ) .. letter
+  if options[current_option].label == "name" then
+    demo_name = (demo_name or "" ) .. letter
+  elseif options[current_option].label == "ip" then
+    demo_ip = (demo_ip or "") .. letter
+  end
 end
 
 function love.mousepressed(x,y,button)
