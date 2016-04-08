@@ -7,7 +7,7 @@ lovernet.mode = {
 
 function lovernet:_log(...)
   local args = { ... }
-  args[1] = os.time().." ["..args[1].."]"
+  args[1] = os.time().." ["..self._type..":"..args[1].."]"
   assert(self) -- this may use configs from .new later
   print(unpack(args))
 end
