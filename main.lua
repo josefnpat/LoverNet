@@ -58,6 +58,8 @@ function love.load()
   cat = love.graphics.newImage("cat.png")
   cat:setFilter("nearest")
 
+  love.window.setIcon( love.image.newImageData("cat.png") )
+
 end
 
 function love.draw()
