@@ -1,16 +1,16 @@
 function love.load()
 
-  if headless then server.start() return end
-
-  math.randomseed(os.time())
-
   lovernetlib = require("lovernet")
 
   server = require "server"
+
+  if headless then server.start() return end
+
   client = require "client"
 
-  demo_name = nil
+  math.randomseed(os.time())
 
+  demo_name = nil
   demo_ip = "50.116.63.25"
 
   options = {
