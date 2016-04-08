@@ -11,10 +11,12 @@ function love.load()
 
   options = {
     {
-      name = function() return server_data and "Shutdown Server" or "Host Server" end,
+      name = function() return server_data and
+        --"Server Hosted"
+        "Stop Server" or "Host Server" end,
       action = function()
         if server_data then
-          server.stop()
+          --server.stop()
         else
           server.start()
         end
@@ -80,8 +82,8 @@ function love.keypressed(key)
   if key == "escape" then
     if client_data then
       client.stop()
-    elseif server_data then
-      server.stop()
+    --elseif server_data then
+      --server.stop()
     else
       love.event.quit()
     end
