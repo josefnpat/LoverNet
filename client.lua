@@ -177,7 +177,7 @@ function client.draw()
       love.graphics.print(v.name,
         v.x+10,
         v.y-love.graphics.getFont():getHeight()/2)
-      love.graphics.circle("line",v.x,v.y,8)
+      love.graphics.circle("line",v.x,v.y,7)
     end
 
     love.graphics.setColor(255,0,0) -- red
@@ -186,8 +186,11 @@ function client.draw()
       love.graphics.print(i,
         v.x+10,
         v.y-love.graphics.getFont():getHeight()/2)
-      love.graphics.circle("line",v.x,v.y,8)
+      love.graphics.circle("line",v.x,v.y,6)
     end
+
+
+    love.graphics.circle("line",love.mouse.getX(),love.mouse.getY(),8)
 
   end
 
