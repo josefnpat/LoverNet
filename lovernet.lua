@@ -5,7 +5,7 @@ lovernet.mode = {
   server = "Server",
 }
 
-function lovernet:log(...)
+function lovernet:_log(...)
   local args = { ... }
   args[1] = os.time().." ["..args[1].."]"
   assert(self) -- this may use configs from .new later
@@ -25,7 +25,7 @@ function lovernet.new(init)
   init = init or {}
   local self = {}
 
-  self.log = lovernet.log
+  self._log = lovernet._log
 
   self._dt = 0
 
@@ -90,7 +90,7 @@ function lovernet.new(init)
 
   self._validateRecursive = lovernet._validateRecursive
 
-  self:log("init","Setting up "..self._type.." on port "..self._port)
+  self:_log("start","Starting "..self._type.." on port "..self._port)
   if self._type == lovernet.mode.client then
     self._host = self._enet.host_create()
     self._host:connect(self._ip .. ':' .. self._port)
@@ -324,10 +324,10 @@ function lovernet:update(dt)
           self:_initUser(event.peer)
           local user = self:_getUser(event.peer)
           table.insert(self._peers,event.peer)
-          self:log("event","Connect: " .. tostring(event.peer))
+          self:_log("event","Connect: " .. tostring(event.peer))
         elseif event.type == "disconnect" then
           local user = self:_getUser(event.peer)
-          self:log("event","Disconnect: " .. user.name)
+          self:_log("event","Disconnect: " .. user.name)
           self:_removeUser(event.peer)
           for i,v in pairs(self._peers) do
             if v == event.peer then
@@ -352,6 +352,7 @@ function lovernet:disconnect()
   for i,v in pairs(self._peers) do
     v:disconnect()
   end
+  self:_log("stop","Stopping "..self._type.." on port "..self._port)
 end
 
 function lovernet:getClientTransmitRate()

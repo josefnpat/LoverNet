@@ -24,9 +24,23 @@ To use LoverNet as a library, add `lovernet.lua`, `license.txt` and the SerDes
 library you wish to use to your project. I suggest the included `bitser.lua` and
 `bitser-license.txt`
 
-## License
+## Logging
 
-The LoverNet project is licensed under: zlib/libpng (see `license.txt`)
+To change the way logging works, monkey patch `_log`.
+
+For example, to print the log info instead of using the default formatting:
+
+```lua
+lovernetlib = require "lovernet"
+
+lovernet = lovernetlib.new()
+
+lovernet._log = function(...)
+  local args = {...} -- pull in all args
+  local _self = table.remove(args,1) -- remove self object
+  print(unpack(args))
+end
+```
 
 ### Included Libraries
 
@@ -34,14 +48,14 @@ The LoverNet project is licensed under: zlib/libpng (see `license.txt`)
 
 ## Using Other SerDes' (Serializer/Deserializer)
 
-To use a different SerDes, monkey patch `lovernet.encode`, `lovernet.decode` and `lovernet._serdes`.
+To use a different SerDes, monkey patch `lovernet._encode`, `lovernet._decode` and `lovernet._serdes`.
 
 For example to use `json` instead of `bitser`:
 
 _Note: it will behove you to use a serializer that supports sparse arrays_
 
 ```lua
-require "lovernet"
+lovernetlib = require "lovernet"
 local lovernet = lovernetlib.new()
 
 -- an example using json4lua
@@ -56,3 +70,7 @@ lovernet._decode = function(self,input)
   return success,errmsg
 end
 ```
+
+## License
+
+The LoverNet project is licensed under: zlib/libpng (see `license.txt`)
