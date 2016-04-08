@@ -3,7 +3,11 @@ local server = {}
 function server.start()
   server_data = {}
   server_data.lovernet = lovernetlib.new({type=lovernetlib.mode.server})
-  require("define")(server_data.lovernet)
+  if server_data.lovernet then
+    require("define")(server_data.lovernet)
+  else
+    server_data = nil
+  end
 end
 
 function server.stop()

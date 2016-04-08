@@ -26,7 +26,7 @@ lovernet.mode = {
 -- param serdes The Serializer/Deserializer module. Defaults to bitser.
 -- param transmitRate The transmission rate that the object should update with. Defaults to 1/16.
 -- param log The function used for logging. Defaults to lovernet.log.
--- return new LoverNet object.
+-- return new LoverNet object or nil,error
 function lovernet.new(init)
 
   init = init or {}
@@ -110,7 +110,12 @@ function lovernet.new(init)
     self._host:connect(self._ip .. ':' .. self._port)
     self._cache = {}
   else --if self._type == lovernet.mode.server then
-    self._host = self._enet.host_create("*:"..self._port)
+    local enet_error
+    self._host,enet_error = self._enet.host_create("*:"..self._port)
+    if enet_error then
+      self:log("error",enet_error)
+      return nil,enet_error
+    end
   end
 
   return self
