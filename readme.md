@@ -47,11 +47,11 @@ local lovernet = lovernetlib.new()
 -- an example using json4lua
 lovernet._serdes = require "json"
 
-lovernet.encode = function(self,input)
+lovernet._encode = function(self,input)
   return self._serdes.encode(input)
 end
 
-lovernet.decode = function(self,input)
+lovernet._decode = function(self,input)
   local success,errmsg self._serdes.decode(input)
   return success,errmsg
 end

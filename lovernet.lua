@@ -12,11 +12,11 @@ function lovernet:log(...)
   print(unpack(args))
 end
 
-function lovernet:encode(input)
+function lovernet:_encode(input)
   return self._serdes.dumps(input)
 end
 
-function lovernet:decode(input)
+function lovernet:_decode(input)
   return self._serdes.loads(input)
 end
 
@@ -68,8 +68,8 @@ function lovernet.new(init)
   self.getData = lovernet.getData
   self.clearData = lovernet.clearData
 
-  self.encode = lovernet.encode
-  self.decode = lovernet.decode
+  self._encode = lovernet._encode
+  self._decode = lovernet._decode
 
   self._connectedToServer = false
   self.isConnectedToServer = lovernet.isConnectedToServer
@@ -112,7 +112,7 @@ end
 
 function lovernet:_renderPayload()
   --TODO: Add time info to allow for delays (e.g. only refresh this every second)
-  local raw = self:encode(self._data)
+  local raw = self:_encode(self._data)
   self._data = {}
   return raw
 end
@@ -221,7 +221,7 @@ end
 
 function lovernet:_validateEventReceive(event)
 
-  local success,data = pcall(function() return self:decode(event.data) end)
+  local success,data = pcall(function() return self:_decode(event.data) end)
   if success then
     local ret = {}
     if type(data) == "table" then
@@ -276,7 +276,7 @@ function lovernet:_validateEventReceive(event)
     end
 
     if #ret > 0 then
-      event.peer:send(self:encode(ret))
+      event.peer:send(self:_encode(ret))
     end
 
   end -- if success
