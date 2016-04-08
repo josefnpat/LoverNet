@@ -43,6 +43,7 @@ function love.load()
           --server.stop()
         else
           server.start()
+          demo_ip = nil
         end
       end,
     },
