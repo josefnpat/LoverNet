@@ -17,30 +17,6 @@ lovernet.mode = {
   server = "Server",
 }
 
---- Send a message to the LoverNet logging system.
--- @param ... This function handles data much like lua's print does, but it should be called with the syntax lovernetobject:log(...)
-function lovernet:log(...)
-  local args = { ... }
-  args[1] = os.time().." ["..self._type..":"..args[1].."]"
-  assert(self) -- this may use configs from .new later
-  print(unpack(args))
-end
-
---- Internal function that encodes data for transmission.
--- @param input Data to be encoded.
--- @return encoded data
-function lovernet:_encode(input)
-  return self._serdes.dumps(input)
-end
-
---- Internal function that decodes data for transmission.
--- @param input Data to be decoded.
--- @return decoded data
-function lovernet:_decode(input)
-  return self._serdes.loads(input)
-end
-
-
 --- Instansiate a new instance of LoverNet.
 -- @param init Parameters are passed in by a table.
 -- param type The object type (lovernet.mode.client or lovernet.mode.server) Defaults to lovernet.mode.client
@@ -146,15 +122,6 @@ function lovernet:getPort()
   return self._port
 end
 
---- Internal function to determine if there is data to transmit.
--- @return boolean
-function lovernet:_hasPayload()
-  for i,v in pairs(self._data) do
-    return true
-  end
-  return false
-end
-
 --- Determine if the client is connected to the server
 -- @return boolean
 function lovernet:isConnectedToServer()
@@ -220,13 +187,6 @@ function lovernet:addDefaultOnClient(name,input)
   self._ops[name].default_client = input
 end
 
---- Internal function to create a index for a peer.
--- @param peer object
--- @return string
-function lovernet:_getUserIndex(peer)
-  return tostring(peer)
-end
-
 --- Gets the user from the peer object
 -- @param peer object
 -- @return user object
@@ -238,113 +198,6 @@ end
 -- @return table of user objects
 function lovernet:getUsers()
   return self._users
-end
-
---- Internal function to remove a user
--- @param peer object
-function lovernet:_removeUser(peer)
-  self._users[self:_getUserIndex(peer)] = nil
-end
-
---- Internal function to initialize a user
--- @param peer object
-function lovernet:_initUser(peer)
-  local user = {}
-  user.name = "InvalidName"..math.random(1000,9999)
-  self._users[self:_getUserIndex(peer)] = user
-end
-
---- Internal function to validate the addValidateOn[Client|Server] data recursively.
--- @param config mixed
--- @param data mixed
--- @return boolean, error string
-function lovernet:_validateRecursive(config,data)
-  if type(config) == "table" then
-    if type(data) == "table" then
-      for i,v in pairs(config) do
-        local success,errmsg = self._validateRecursive(self,v,data[i])
-        if not success then
-          return false,errmsg
-        end
-      end
-    else
-      return false,"expecting `table`, got `"..type(data).."`["..tostring(data).."]"
-    end
-    return true
-  elseif type(config) == "function" then
-    local success,errmsg = config(data)
-    return success,errmsg
-  elseif config == type(data) then
-    return true
-  else
-    return false,"expecting `"..config.."`, got `"..type(data).."`["..tostring(data).."]"
-  end
-end
-
---- Internal function to validate and store data on the receive event
--- @param event object
-function lovernet:_validateEventReceive(event)
-
-  local success,data = pcall(function() return self:_decode(event.data) end)
-  if success then
-    local ret = {}
-    if type(data) == "table" then
-      for _,op in pairs(data) do
-        if type(op) == "table" then
-          if op.f then
-            if self._ops[op.f] then
-
-              local vsuccess,errmsg
-              if self._type == lovernet.mode.client then
-                if type(self._ops[op.f].validate_client) == "function" then
-                  vsuccess,errmsg = self._ops[op.f].validate_client(self,event.peer,op.d,self._storage)
-                else
-                  vsuccess,errmsg = self._validateRecursive(self,self._ops[op.f].validate_client,op.d)
-                end
-              else --if self._type == lovernet.mode.server then
-                if type(self._ops[op.f].validate_server) == "function" then
-                  vsuccess,errmsg = self._ops[op.f].validate_server(self,event.peer,op.d,self._storage)
-                else
-                  vsuccess,errmsg = self._validateRecursive(self,self._ops[op.f].validate_server,op.d)
-                end
-              end
-
-              if vsuccess then
-
-                if self._type == lovernet.mode.client then
-                  local opret = self._ops[op.f].process_client(self,event.peer,op.d,self._storage)
-                  if opret then
-                    self._cache[op.f] = opret
-                  end
-                else --if self._type == lovernet.mode.server then
-                  local opret = self._ops[op.f].process_server(self,event.peer,op.d,self._storage)
-                  if opret then
-                    table.insert(ret,{f=op.f,d=opret})
-                  end
-                end
-
-              else
-                self:log("error","Op `"..op.f.."` did not validate, ErrMsg:",errmsg)
-              end
-
-            else
-              self:log("error","Op.f `"..op.f.."` not in ops table:",op.f)
-            end
-          else
-            self:log("error","Op data object expect to have `f` index, got ",type(op.f))
-          end
-        else
-          self:log("error","Op data object expected to be a table, got:",type(op))
-        end
-      end
-    end
-
-    if #ret > 0 then
-      event.peer:send(self:_encode(ret))
-    end
-
-  end -- if success
-
 end
 
 --- Update function required to enforce communication between client/server
@@ -481,6 +334,152 @@ function lovernet:clearData(name)
       table.remove(self._data,i)
     end
   end
+end
+
+--- Send a message to the LoverNet logging system.
+-- @param ... This function handles data much like lua's print does, but it should be called with the syntax lovernetobject:log(...)
+function lovernet:log(...)
+  local args = { ... }
+  args[1] = os.time().." ["..self._type..":"..args[1].."]"
+  assert(self) -- this may use configs from .new later
+  print(unpack(args))
+end
+
+--- Internal function that encodes data for transmission.
+-- @param input Data to be encoded.
+-- @return encoded data
+function lovernet:_encode(input)
+  return self._serdes.dumps(input)
+end
+
+--- Internal function that decodes data for transmission.
+-- @param input Data to be decoded.
+-- @return decoded data
+function lovernet:_decode(input)
+  return self._serdes.loads(input)
+end
+
+--- Internal function to determine if there is data to transmit.
+-- @return boolean
+function lovernet:_hasPayload()
+  for i,v in pairs(self._data) do
+    return true
+  end
+  return false
+end
+
+--- Internal function to create a index for a peer.
+-- @param peer object
+-- @return string
+function lovernet:_getUserIndex(peer)
+  return tostring(peer)
+end
+
+--- Internal function to initialize a user
+-- @param peer object
+function lovernet:_initUser(peer)
+  local user = {}
+  user.name = "InvalidName"..math.random(1000,9999)
+  self._users[self:_getUserIndex(peer)] = user
+end
+
+--- Internal function to remove a user
+-- @param peer object
+function lovernet:_removeUser(peer)
+  self._users[self:_getUserIndex(peer)] = nil
+end
+
+--- Internal function to validate the addValidateOn[Client|Server] data recursively.
+-- @param config mixed
+-- @param data mixed
+-- @return boolean, error string
+function lovernet:_validateRecursive(config,data)
+  if type(config) == "table" then
+    if type(data) == "table" then
+      for i,v in pairs(config) do
+        local success,errmsg = self._validateRecursive(self,v,data[i])
+        if not success then
+          return false,errmsg
+        end
+      end
+    else
+      return false,"expecting `table`, got `"..type(data).."`["..tostring(data).."]"
+    end
+    return true
+  elseif type(config) == "function" then
+    local success,errmsg = config(data)
+    return success,errmsg
+  elseif config == type(data) then
+    return true
+  else
+    return false,"expecting `"..config.."`, got `"..type(data).."`["..tostring(data).."]"
+  end
+end
+
+--- Internal function to validate and store data on the receive event
+-- @param event object
+function lovernet:_validateEventReceive(event)
+
+  local success,data = pcall(function() return self:_decode(event.data) end)
+  if success then
+    local ret = {}
+    if type(data) == "table" then
+      for _,op in pairs(data) do
+        if type(op) == "table" then
+          if op.f then
+            if self._ops[op.f] then
+
+              local vsuccess,errmsg
+              if self._type == lovernet.mode.client then
+                if type(self._ops[op.f].validate_client) == "function" then
+                  vsuccess,errmsg = self._ops[op.f].validate_client(self,event.peer,op.d,self._storage)
+                else
+                  vsuccess,errmsg = self._validateRecursive(self,self._ops[op.f].validate_client,op.d)
+                end
+              else --if self._type == lovernet.mode.server then
+                if type(self._ops[op.f].validate_server) == "function" then
+                  vsuccess,errmsg = self._ops[op.f].validate_server(self,event.peer,op.d,self._storage)
+                else
+                  vsuccess,errmsg = self._validateRecursive(self,self._ops[op.f].validate_server,op.d)
+                end
+              end
+
+              if vsuccess then
+
+                if self._type == lovernet.mode.client then
+                  local opret = self._ops[op.f].process_client(self,event.peer,op.d,self._storage)
+                  if opret then
+                    self._cache[op.f] = opret
+                  end
+                else --if self._type == lovernet.mode.server then
+                  local opret = self._ops[op.f].process_server(self,event.peer,op.d,self._storage)
+                  if opret then
+                    table.insert(ret,{f=op.f,d=opret})
+                  end
+                end
+
+              else
+                self:log("error","Op `"..op.f.."` did not validate, ErrMsg:",errmsg)
+              end
+
+            else
+              self:log("error","Op.f `"..op.f.."` not in ops table:",op.f)
+            end
+          else
+            self:log("error","Op data object expect to have `f` index, got ",type(op.f))
+          end
+        else
+          self:log("error","Op data object expected to be a table, got:",type(op))
+        end
+      end
+    end
+
+    if #ret > 0 then
+      event.peer:send(self:_encode(ret))
+    end
+
+  end -- if success
+
 end
 
 return lovernet
