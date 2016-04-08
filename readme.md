@@ -26,7 +26,7 @@ library you wish to use to your project. I suggest the included `bitser.lua` and
 
 ## Logging
 
-To change the way logging works, monkey patch `_log`.
+To change the way logging works, monkey patch `log`.
 
 For example, to print the log info instead of using the default formatting:
 
@@ -35,7 +35,7 @@ lovernetlib = require "lovernet"
 
 lovernet = lovernetlib.new()
 
-lovernet._log = function(...)
+lovernet.log = function(...)
   local args = {...} -- pull in all args
   local _self = table.remove(args,1) -- remove self object
   print(unpack(args))

@@ -5,7 +5,7 @@ lovernet.mode = {
   server = "Server",
 }
 
-function lovernet:_log(...)
+function lovernet:log(...)
   local args = { ... }
   args[1] = os.time().." ["..self._type..":"..args[1].."]"
   assert(self) -- this may use configs from .new later
@@ -25,7 +25,7 @@ function lovernet.new(init)
   init = init or {}
   local self = {}
 
-  self._log = lovernet._log
+  self.log = lovernet.log
 
   self._dt = 0
 
@@ -90,7 +90,7 @@ function lovernet.new(init)
 
   self._validateRecursive = lovernet._validateRecursive
 
-  self:_log("start","Starting "..self._type.." on port "..self._port)
+  self:log("start","Starting "..self._type.." on port "..self._port)
   if self._type == lovernet.mode.client then
     self._host = self._enet.host_create()
     self._host:connect(self._ip .. ':' .. self._port)
@@ -260,17 +260,17 @@ function lovernet:_validateEventReceive(event)
                 end
 
               else
-                self:_log("error","Op `"..op.f.."` did not validate, ErrMsg:",errmsg)
+                self:log("error","Op `"..op.f.."` did not validate, ErrMsg:",errmsg)
               end
 
             else
-              self:_log("error","Op.f `"..op.f.."` not in ops table:",op.f)
+              self:log("error","Op.f `"..op.f.."` not in ops table:",op.f)
             end
           else
-            self:_log("error","Op data object expect to have `f` index, got ",type(op.f))
+            self:log("error","Op data object expect to have `f` index, got ",type(op.f))
           end
         else
-          self:_log("error","Op data object expected to be a table, got:",type(op))
+          self:log("error","Op data object expected to be a table, got:",type(op))
         end
       end
     end
@@ -314,7 +314,7 @@ function lovernet:update(dt)
           elseif event.type == "receive" then
             self:_validateEventReceive(event)
           else
-            self:_log('error','unexpected event type',event.type)
+            self:log('error','unexpected event type',event.type)
           end
         end
 
@@ -324,10 +324,10 @@ function lovernet:update(dt)
           self:_initUser(event.peer)
           local user = self:_getUser(event.peer)
           table.insert(self._peers,event.peer)
-          self:_log("event","Connect: " .. tostring(event.peer).." ["..tostring(user.name).."]")
+          self:log("event","Connect: " .. tostring(event.peer).." ["..tostring(user.name).."]")
         elseif event.type == "disconnect" then
           local user = self:_getUser(event.peer)
-          self:_log("event","Disconnect: " .. tostring(event.peer).." ["..tostring(user.name).."]")
+          self:log("event","Disconnect: " .. tostring(event.peer).." ["..tostring(user.name).."]")
           self:_removeUser(event.peer)
           for i,v in pairs(self._peers) do
             if v == event.peer then
@@ -337,7 +337,7 @@ function lovernet:update(dt)
         elseif event.type == "receive" then
           self:_validateEventReceive(event)
         else
-          self:_log('error','unexpected event type')
+          self:log('error','unexpected event type')
         end
 
       end
@@ -352,7 +352,7 @@ function lovernet:disconnect()
   for i,v in pairs(self._peers) do
     v:disconnect()
   end
-  self:_log("stop","Stopping "..self._type.." on port "..self._port)
+  self:log("stop","Stopping "..self._type.." on port "..self._port)
 end
 
 function lovernet:getClientTransmitRate()

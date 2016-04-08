@@ -34,7 +34,7 @@ return function(l)
   -- Store the user's name in the user data
   l:addProcessOnServer('whoami',function(self,peer,arg,storage)
     local user = self:_getUser(peer)
-    self:_log("event","Rename: "..tostring(user.name).." => "..tostring(arg.name))
+    self:log("event","Rename: "..tostring(user.name).." => "..tostring(arg.name))
     if isValidString(arg.name) then
       user.name = arg.name
     end
