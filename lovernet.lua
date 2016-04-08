@@ -33,10 +33,8 @@ function lovernet.new(init)
 
   self._ip = init.ip or "localhost"
   self._port = init.port or 19870
-  if self._type == lovernet.mode.client then
-    self.getIp = lovernet.getIp
-    self.getPort = lovernet.getPort
-  end
+  self.getIp = lovernet.getIp
+  self.getPort = lovernet.getPort
 
   self._ops = {}
 
