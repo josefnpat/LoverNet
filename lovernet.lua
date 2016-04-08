@@ -192,7 +192,7 @@ end
 
 function lovernet:_initUser(peer)
   local user = {}
-  user.name = "InvalidName"..math.random(1,9999)
+  user.name = "InvalidName"..math.random(1000,9999)
   self._users[self:_getUserIndex(peer)] = user
 end
 
@@ -324,10 +324,10 @@ function lovernet:update(dt)
           self:_initUser(event.peer)
           local user = self:_getUser(event.peer)
           table.insert(self._peers,event.peer)
-          self:_log("event","Connect: " .. tostring(event.peer))
+          self:_log("event","Connect: " .. tostring(event.peer).." ["..tostring(user.name).."]")
         elseif event.type == "disconnect" then
           local user = self:_getUser(event.peer)
-          self:_log("event","Disconnect: " .. user.name)
+          self:_log("event","Disconnect: " .. tostring(event.peer).." ["..tostring(user.name).."]")
           self:_removeUser(event.peer)
           for i,v in pairs(self._peers) do
             if v == event.peer then
