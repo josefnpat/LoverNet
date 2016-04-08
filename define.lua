@@ -56,7 +56,9 @@ return function(l)
   l:addProcessOnServer('p',function(self,peer,arg,storage)
     local info = {}
     for i,v in pairs(self:_getUsers()) do
-      table.insert(info,{name=v.name,x=v.x,y=v.y})
+      if v.x and v.y then
+        table.insert(info,{name=v.name,x=v.x,y=v.y})
+      end
     end
     -- Return it to the requester
     return info
