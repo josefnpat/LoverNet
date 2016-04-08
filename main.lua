@@ -50,12 +50,20 @@ function love.load()
 
   current_option = 1
 
+  cat = love.graphics.newImage("cat.png")
+  cat:setFilter("nearest")
+
 end
 
 function love.draw()
 
   if not client_data then
     love.graphics.setColor(255,255,255)
+
+    -- Lol, it's a cat.
+    love.graphics.draw(cat,love.graphics.getWidth()/2,love.graphics.getHeight()/4,
+      0,8,8,cat:getWidth()/2,cat:getHeight()/2)
+
     local offset = (love.graphics.getHeight() - #options*24)/2
     love.graphics.printf("LoverNet Demo",0,offset-24,love.graphics.getWidth(),"center")
     for i,v in pairs(options) do
