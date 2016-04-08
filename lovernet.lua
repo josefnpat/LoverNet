@@ -260,17 +260,17 @@ function lovernet:_validateEventReceive(event)
                 end
 
               else
-                print("Op `"..op.f.."` did not validate, ErrMsg:",errmsg)
+                self:_log("error","Op `"..op.f.."` did not validate, ErrMsg:",errmsg)
               end
 
             else
-              print("Op.f `"..op.f.."` not in ops table:",op.f)
+              self:_log("error","Op.f `"..op.f.."` not in ops table:",op.f)
             end
           else
-            print("Op data object expect to have `f` index, got ",type(op.f))
+            self:_log("error","Op data object expect to have `f` index, got ",type(op.f))
           end
         else
-          print("Op data object expected to be a table, got:",type(op))
+          self:_log("error","Op data object expected to be a table, got:",type(op))
         end
       end
     end
@@ -314,7 +314,7 @@ function lovernet:update(dt)
           elseif event.type == "receive" then
             self:_validateEventReceive(event)
           else
-            print('unexpected event type',event.type)
+            self:_log('error','unexpected event type',event.type)
           end
         end
 
@@ -337,7 +337,7 @@ function lovernet:update(dt)
         elseif event.type == "receive" then
           self:_validateEventReceive(event)
         else
-          print('unexpected event type')
+          self:_log('error','unexpected event type')
         end
 
       end
