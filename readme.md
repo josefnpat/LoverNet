@@ -24,6 +24,12 @@ To use LoverNet as a library, add `lovernet.lua`, `license.txt` and the SerDes
 library you wish to use to your project. I suggest the included `bitser.lua` and
 `bitser-license.txt`
 
+### Docs
+
+To generate documentation, use [LDoc](http://stevedonovan.github.io/ldoc/). e.g.:
+
+`cd lovernet && ldoc .`
+
 ## Logging
 
 To change the way logging works, monkey patch `log`.
