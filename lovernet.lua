@@ -58,6 +58,9 @@ function lovernet.new(init)
 
     self.getCache = lovernet.getCache
     self.clearCache = lovernet.clearCache
+  else -- if self._type == lovernet.mode.server then
+    self.getStorage = lovernet.getStorage
+    self.setStorage = lovernet.setStorage
   end
 
   self._storage = {}
@@ -345,6 +348,18 @@ function lovernet:clearData(name)
       table.remove(self._data,i)
     end
   end
+end
+
+--- Returns the storage object that is contained by the server. Only available in server mode.
+-- @return storage data
+function lovernet:getStorage()
+  return self._storage
+end
+
+--- Set the storage object for the server. Only available in server mode.
+-- @param storage data
+function lovernet:setStorage(storage)
+  self._storage = storage
 end
 
 --- Send a message to the LoverNet logging system.
