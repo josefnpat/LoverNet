@@ -493,4 +493,6 @@ function lovernet:_validateEventReceive(event)
 
 end
 
+setmetatable(lovernet,{__call = function(_,init) return lovernet.new(init) end})
+
 return lovernet
