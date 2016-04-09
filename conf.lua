@@ -1,6 +1,7 @@
 board_size = 64
 pixel_size = 12
 headless = false
+confetti = false
 
 function love.conf(t)
 
@@ -10,7 +11,9 @@ function love.conf(t)
   for _,v in pairs(arg) do
     if v == "--headless" or v == "-s" then
       headless = true
-      break
+    end
+    if v == "--confetti" or v == "-c" then
+      confetti = true
     end
   end
 

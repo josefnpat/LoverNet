@@ -48,6 +48,14 @@ function love.load()
       end,
     },
     {
+      name = function()
+        return "Host Config: " .. (confetti and "Disable Confetti" or "Enable Confetti")
+      end,
+      action = function()
+        confetti = not confetti
+      end,
+    },
+    {
       name = function() return "Quit" end,
       action = love.event.quit,
     },
