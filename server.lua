@@ -57,7 +57,7 @@ function server.update(dt)
   if conway then
     if not gameOfLife then gameOfLife = require 'conway' end
     conway_dt = conway_dt or 0
-    conway_t = conway_t or 1/16
+    conway_t = conway_t or 1/2
 
     conway_dt = conway_dt + dt
     if conway_dt > conway_t then
