@@ -2,6 +2,7 @@ board_size = 64
 pixel_size = 12
 headless = false
 confetti = false
+conway = false
 
 function love.conf(t)
 
@@ -16,7 +17,6 @@ function love.conf(t)
       confetti = true
     elseif v == '--conway' then
       conway = true
-      gameOfLife = require 'conway'
     end
   end
 

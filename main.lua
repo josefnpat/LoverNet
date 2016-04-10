@@ -56,11 +56,11 @@ function love.load()
       end,
     },
     {
-      name = function() 
-        return "Toggle Game Of Life: " .. (not conway and 'Dead' or 'Alive') 
+      name = function()
+        return "Toggle Game Of Life: " .. (not conway and 'Dead' or 'Alive')
       end,
-      action = function() 
-        conway = not conway 
+      action = function()
+        conway = not conway
       end,
     },
     {

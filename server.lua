@@ -25,22 +25,6 @@ end
 function server.update(dt)
   server_data.lovernet:update(dt)
 
-  if conway then
-    if not gameOfLife then gameOfLife = require 'conway' end
-    conway_dt = conway_dt or 0
-    conway_t = conway_t or 1/16
-
-    conway_dt = conway_dt + dt
-    if conway_dt > conway_t then
-      conway_dt = 0
-
-      local storage = server_data.lovernet:getStorage()
-      storage.board = storage.board or {}
-      gameOfLife( storage.board, board_size, board_size, {r=255,g=255,b=255}, storage.draw_index or 0 )
-      storage.draw_index = ( storage.draw_index or 0 ) + 1
-    end
-  end
-
   if confetti then
 
     confetti_dt = confetti_dt or 0
@@ -69,6 +53,23 @@ function server.update(dt)
     end
 
   end
+
+  if conway then
+    if not gameOfLife then gameOfLife = require 'conway' end
+    conway_dt = conway_dt or 0
+    conway_t = conway_t or 1/16
+
+    conway_dt = conway_dt + dt
+    if conway_dt > conway_t then
+      conway_dt = 0
+
+      local storage = server_data.lovernet:getStorage()
+      storage.board = storage.board or {}
+      gameOfLife( storage.board, board_size, board_size, {r=255,g=255,b=255}, storage.draw_index or 0 )
+      storage.draw_index = ( storage.draw_index or 0 ) + 1
+    end
+  end
+
 
 end
 
