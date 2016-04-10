@@ -1,3 +1,10 @@
+--------------------------------------------------------------------------------
+-- The author of this wishes to remain anonymous, but wants to contribute to the
+-- project regardless. While the code has been reviewed to ensure it is not
+-- malicious, I am not at liberty to say that LoverNet will support or maintain
+-- this functionality of the demo.
+--------------------------------------------------------------------------------
+
 -- Indexes in the board are being accesed first height, second width, like [y][x]
 -- if seen in screen coordinates or the more common (for programmers) [i][j], this
 -- is because the cache misses are reduced by accessing adjacent locations more
