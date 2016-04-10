@@ -56,6 +56,14 @@ function love.load()
       end,
     },
     {
+      name = function() 
+        return "Toggle Game Of Life: " .. (not conway and 'Dead' or 'Alive') 
+      end,
+      action = function() 
+        conway = not conway 
+      end,
+    },
+    {
       name = function() return "Quit" end,
       action = love.event.quit,
     },

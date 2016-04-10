@@ -14,6 +14,9 @@ function love.conf(t)
     end
     if v == "--confetti" or v == "-c" then
       confetti = true
+    elseif v == '--conway' then
+      conway = true
+      gameOfLife = require 'conway'
     end
   end
 
