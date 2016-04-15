@@ -37,10 +37,25 @@ function client.update(dt)
   local cx,cy = love.mouse.getPosition()
   -- If the current position has changed
   if cx ~= client_data.lx or cy ~= client_data.ly then
+    -- clear the offset data from the keyboard
+    client_data.ox,client_data.oy = 0,0
+    -- use the corrent mouse coords
     client_data.lx,client_data.ly = cx,cy
     -- Only send the latest mouse position
     client_data.lovernet:clearData('pos')
     client_data.lovernet:pushData('pos',{x=cx,y=cy})
+  end
+
+  -- Check keyboard inputs for offset data
+  if love.keyboard.isDown("right") then client_data.ox = client_data.ox + 1 end
+  if love.keyboard.isDown("left") then client_data.ox = client_data.ox - 1 end
+  if love.keyboard.isDown("down") then client_data.oy = client_data.oy + 1 end
+  if love.keyboard.isDown("up") then client_data.oy = client_data.oy - 1 end
+
+  -- Send keyboard offsets if it's being used
+  if client_data.ox ~= 0 or client_data.oy ~= 0 then
+    client_data.lovernet:clearData('pos')
+    client_data.lovernet:pushData('pos',{x=cx+client_data.ox,y=cy+client_data.oy})
   end
 
   -- If we have not requested a player list
