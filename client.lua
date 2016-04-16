@@ -204,8 +204,12 @@ function client.draw()
       love.graphics.circle("line",v.x,v.y,6)
     end
 
-
-    love.graphics.circle("line",love.mouse.getX(),love.mouse.getY(),8)
+    -- show the current cursor position
+    love.graphics.circle("line",
+      love.mouse.getX()+client_data.ox,
+      love.mouse.getY()+client_data.oy,
+      8
+    )
 
   end
 
