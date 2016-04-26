@@ -30,6 +30,8 @@ To generate documentation, use [LDoc](http://stevedonovan.github.io/ldoc/). e.g.
 
 `cd lovernet && ldoc .`
 
+For examples and more, see the [wiki hosted on GitHub](https://github.com/josefnpat/LoverNet/wiki).
+
 ### Included Libraries
 
 * [bitser](https://github.com/gvx/bitser) is licensed under: ISC (See `bitser-license.txt`)
