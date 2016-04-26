@@ -53,6 +53,7 @@ function lovernet.new(init)
 
   if self._type == lovernet.mode.client then
     self.pushData = lovernet.pushData
+    self.sendData = lovernet.sendData
     self.hasData = lovernet.hasData
     self.clearData = lovernet.clearData
 
@@ -324,6 +325,15 @@ end
 -- @param args data
 function lovernet:pushData(name,args)
   assert(self._ops[name])
+  table.insert(self._data,{f=name,d=args})
+end
+
+--- Overwrites all new outgoing data requests. Only available in client mode.
+-- @param name string
+-- @param args data
+function lovernet:sendData(name,args)
+  assert(self._ops[name])
+  self:clearData(name)
   table.insert(self._data,{f=name,d=args})
 end
 
