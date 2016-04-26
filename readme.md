@@ -1,4 +1,4 @@
-# LoverNet
+![LoverNet Mascot & Logo](dev/mascot-and-logo-mini.png)
 
 ## Share the LÖVE
 
