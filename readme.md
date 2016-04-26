@@ -30,24 +30,6 @@ To generate documentation, use [LDoc](http://stevedonovan.github.io/ldoc/). e.g.
 
 `cd lovernet && ldoc .`
 
-## Logging
-
-To change the way logging works, monkey patch `log`.
-
-For example, to print the log to a file instead of standard out:
-
-```lua
-lovernetlib = require "lovernet"
-
-log = function(...)
-  local args = {...} -- pull in all args
-  local _self = table.remove(args,1) -- remove self object
-  love.filesystem.append("log.txt",table.concat(args,"\t").."\n")
-end
-
-lovernet = lovernetlib.new{log=log}
-```
-
 ### Included Libraries
 
 * [bitser](https://github.com/gvx/bitser) is licensed under: ISC (See `bitser-license.txt`)
