@@ -2,6 +2,8 @@
 
 ## Share the LÖVE
 
+![LoverNet Mascot & Logo](dev/mascot-and-logo-mini.png)
+
 A [LÖVE](https://love2d.org/) module designed to help make networking easier by
 leveraging bitser and enet.
 
