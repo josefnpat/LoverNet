@@ -130,10 +130,10 @@ function client.mousepressed(mx,my,button)
     elseif button == 2 then
 
       -- Simple hack to show how multiple pushData's can be run in one update
-      local cat = love.image.newImageData('cat.png')
-      for cx = 1,cat:getWidth() do
-        for cy = 1,cat:getHeight() do
-          local cr,cg,cb,ca = cat:getPixel(cx-1,cy-1)
+      local icon = love.image.newImageData('icon.png')
+      for cx = 1,icon:getWidth() do
+        for cy = 1,icon:getHeight() do
+          local cr,cg,cb,ca = icon:getPixel(cx-1,cy-1)
           -- Get the target location of the pixel
           local tx,ty = cx+x-1,cy+y-1
           -- Only send data if it's alpha is 255 and it's on the board

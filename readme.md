@@ -80,3 +80,5 @@ end
 ## License
 
 The LoverNet project is licensed under: zlib/libpng (see `license.txt`)
+
+The LoverNet mascot was made by the amazing [VectorByte](https://github.com/Vectorbyte)!

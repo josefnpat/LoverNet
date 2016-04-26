@@ -71,27 +71,35 @@ function love.load()
 
   current_option = 1
 
-  cat = love.graphics.newImage("cat.png")
-  cat:setFilter("nearest")
+  logo = love.graphics.newImage("mascot-and-logo-demo.png")
 
-  love.window.setIcon( love.image.newImageData("cat.png") )
+  icon = love.graphics.newImage("icon.png")
+  icon:setFilter("nearest")
+
+  love.window.setIcon( love.image.newImageData("icon.png") )
 
 end
 
 function love.draw()
 
-  if not client_data then
-    love.graphics.setColor(255,255,255)
+  love.graphics.setColor(255,255,255)
+  love.graphics.draw(logo,love.graphics.getWidth()-logo:getWidth(),0)
 
-    -- Lol, it's a cat.
-    love.graphics.draw(cat,love.graphics.getWidth()/2,love.graphics.getHeight()/4,
-      0,8,8,cat:getWidth()/2,cat:getHeight()/2)
+  if not client_data then
 
     local offset = (love.graphics.getHeight() - #options*24)/2
-    love.graphics.printf("LoverNet Demo",0,offset-24,love.graphics.getWidth(),"center")
+    love.graphics.printf("Demo",
+      0,
+      offset-24,
+      love.graphics.getWidth(),
+      "center")
     for i,v in pairs(options) do
-      local name = i == current_option and ">>> " .. v.name() .. " <<<" or v.name()
-      love.graphics.printf(name,0,i*24+offset,love.graphics.getWidth(),"center")
+      local name = i == current_option and "> " .. v.name() or v.name()
+      love.graphics.printf(name,
+        0,
+        i*24+offset,
+        love.graphics.getWidth(),
+        "center")
     end
   end
 
