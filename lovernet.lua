@@ -43,7 +43,7 @@ function lovernet.new(init)
   self._ip = init.ip or "localhost"
   assert(type(self._ip)=="string")
   self._port = init.port or 19870
-  assert(type(self._port)=="number" or type(self._port=="string"))
+  assert(type(self._port)=="number" or type(self._port)=="string")
   self.getIp = lovernet.getIp
   self.getPort = lovernet.getPort
 
