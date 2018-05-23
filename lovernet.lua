@@ -104,7 +104,7 @@ function lovernet.new(init)
   self.getUser = lovernet.getUser
   self.getUsers = lovernet.getUsers
   self._removeUser = lovernet._removeUser
-  self._initUser = lovernet._initUser
+  self._addUser = lovernet._addUser
 
   self._validateRecursive = lovernet._validateRecursive
 
@@ -257,7 +257,7 @@ function lovernet:update(dt)
       else --if self._type == lovernet.mode.server then
 
         if event.type == "connect" then
-          self:_initUser(event.peer)
+          self:_addUser(event.peer)
           local user = self:getUser(event.peer)
           table.insert(self._peers,event.peer)
           self:log("event","Connect: " .. tostring(event.peer).." ["..tostring(user.name).."]")
@@ -318,6 +318,18 @@ end
 function lovernet:clearCache(name)
   assert(self._ops[name])
   self._cache[name] = nil
+end
+
+--- Set callback for when a user is added
+-- @param callback function
+function lovernet:onAddUser(callback)
+  self._onAddUser = callback
+end
+
+--- Set callback for when a user is removed
+-- @param callback function
+function lovernet:addRemoveUser(callback)
+  self._onRemoveUser = callback
 end
 
 --- Queues a new outgoing data request. Only available in client mode.
@@ -413,15 +425,22 @@ end
 
 --- Internal function to initialize a user
 -- @param peer object
-function lovernet:_initUser(peer)
+function lovernet:_addUser(peer)
   local user = {}
-  user.name = "InvalidName"..math.random(1000,9999)
+  if self._onAddUser then
+    self._onAddUser(user)
+  end
+  user.name = user.name or ("InvalidName"..math.random(1000,9999))
   self._users[self:_getUserIndex(peer)] = user
 end
 
 --- Internal function to remove a user
 -- @param peer object
 function lovernet:_removeUser(peer)
+  local user = self:getUser(peer)
+  if self._onRemoveUser then
+    self._onRemoveUser(user)
+  end
   self._users[self:_getUserIndex(peer)] = nil
 end
 
