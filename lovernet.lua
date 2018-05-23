@@ -103,8 +103,10 @@ function lovernet.new(init)
   self._getUserIndex = lovernet._getUserIndex
   self.getUser = lovernet.getUser
   self.getUsers = lovernet.getUsers
-  self._removeUser = lovernet._removeUser
+  self.onAddUser = lovernet.onAddUser
   self._addUser = lovernet._addUser
+  self.onRemoveUser = lovernet.onRemoveUser
+  self._removeUser = lovernet._removeUser
 
   self._validateRecursive = lovernet._validateRecursive
 
