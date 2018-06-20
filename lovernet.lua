@@ -330,7 +330,7 @@ end
 
 --- Set callback for when a user is removed
 -- @param callback function
-function lovernet:addRemoveUser(callback)
+function lovernet:onRemoveUser(callback)
   self._onRemoveUser = callback
 end
 
