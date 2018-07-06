@@ -291,6 +291,7 @@ function lovernet:disconnect()
   for i,v in pairs(self._peers) do
     v:disconnect()
   end
+  self._host:destroy()
   self:log("stop","Stopping "..self._type.." on port "..self._port)
 end
 
