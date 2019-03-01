@@ -243,17 +243,15 @@ function lovernet:update(dt)
 
       if self._type == lovernet.mode.client then
 
-        if event then
-          if event.type == "connect" then
-            self._connectedToServer = true
-            table.insert(self._peers,event.peer)
-          elseif event.type == "disconnect" then
-            self._peers = {}
-          elseif event.type == "receive" then
-            self:_validateEventReceive(event)
-          else
-            self:log('error','unexpected event type',event.type)
-          end
+        if event.type == "connect" then
+          self._connectedToServer = true
+          table.insert(self._peers,event.peer)
+        elseif event.type == "disconnect" then
+          self._peers = {}
+        elseif event.type == "receive" then
+          self:_validateEventReceive(event)
+        else
+          self:log('error','unexpected event type',event.type)
         end
 
       else --if self._type == lovernet.mode.server then
