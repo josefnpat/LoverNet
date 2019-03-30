@@ -286,10 +286,18 @@ end
 
 --- Disconnect the client(s) from the server.
 function lovernet:disconnect()
-  for i,v in pairs(self._peers) do
-    v:disconnect()
+  for _,peer in pairs(self._peers) do
+    if peer.disconnect then
+      peer:disconnect()
+    end
+    self._peers = {}
   end
-  self._host:destroy()
+  if self._host then
+    if self._host.destroy then
+      self._host:destroy()
+    end
+    self._host = nil
+  end
   self:log("stop","Stopping "..self._type.." on port "..self._port)
 end
 
